@@ -1,28 +1,32 @@
-import { Link, useNavigate } from "react-router-dom"
-import "./Login.scss"
-import { useState } from "react"
-import apiRequest from "../../lib/apiRequest"
+import "./Register.scss";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import apiRequest from "../../lib/apiRequest";
 
-const Login = () => {
+const Register = () => {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError("")
     setIsLoading(true)
     const formData = new FormData(e.target)
     const username = formData.get("username")
+    const email = formData.get("email")
     const password = formData.get("password")
     
     try {
-      const response = await apiRequest.post("/auth/login", {
+      const response = await apiRequest.post("/auth/register", {
         username,
+        email,
         password
       })
-      localStorage.setItem("user", JSON.stringify(response.data))
-      navigate("/")
+      // console.log(response)
+      navigate("/login")
     } catch (error) {
+      console.log(error)
       setError(error.response.data.message)
     } finally {
       setIsLoading(false)
@@ -30,22 +34,23 @@ const Login = () => {
   }
 
   return (
-    <div className="login">
+    <div className="registerPage">
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
-          <h1>Welcome back!</h1>
+          <h1>Create an Account</h1>
           <input type="text" required minLength={3} maxLength={20} name="username" placeholder="Username"/>
-          <input type="text" required name="password" placeholder="Password"/>
-          <button disabled={isLoading}>Login</button>
+          <input type="text" required name="email" placeholder="Email"/>
+          <input type="password" required name="password" placeholder="Password"/>
+          <button disabled={isLoading}>Register</button>
           {error && <span>{error}</span>}
-          <Link to="/register">Don{'\''}t have an account yet?</Link>
+          <Link to="/login">Do you have an account?</Link>
         </form>
       </div>
       <div className="imgContainer">
         <img src="/bg.png" alt="" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Register;
