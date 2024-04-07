@@ -3,13 +3,16 @@ import List from "../../components/List/List";
 import "./ProfilePage.scss";
 import apiRequest from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
+  const { updateUser, currentUser } = useContext(AuthContext)
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
-      const response = await apiRequest.post("/auth.logout")
-      localStorage.removeItem("user")
+      await apiRequest.post("/auth/logout")
+      updateUser(null)
       navigate("/")
     } catch (error) {
       console.log(error)
@@ -25,10 +28,10 @@ const ProfilePage = () => {
           </div>
           <div className="info">
             <span>Avatar:
-              <img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" />
+              <img src={currentUser.avatar || "/noavatar.jpg"} alt="" />
             </span>
-            <span>Username: <b>John Doe</b></span>
-            <span>E-mail: <b>johndoe@gmail.com</b></span>
+            <span>Username: <b>{currentUser.username}</b></span>
+            <span>E-mail: <b>{currentUser.email}</b></span>
             <button onClick={handleLogout}>Logout</button>
           </div>
           <div className="title">
