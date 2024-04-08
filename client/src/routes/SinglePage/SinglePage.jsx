@@ -1,18 +1,37 @@
-import "./SinglePage.scss"
-import Slider from '../../components/Slider/Slider'
-import Map from '../../components/Map/Map'
-import { singlePostData, userData } from '../../lib/dummydata'
-import { useLoaderData } from "react-router-dom"
-import DOMPurify from "dompurify"
+import "./SinglePage.scss";
+import Slider from "../../components/Slider/Slider";
+import Map from "../../components/Map/Map";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
 
 const SinglePage = () => {
-  const post = useLoaderData()
-  console.log(post)
+  const post = useLoaderData();
+  const [saved, setSaved] = useState(post.isSaved);
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleSave = async (e) => {
+    if (!currentUser) navigate("/login");
+
+    setSaved((prev) => !prev);
+    try {
+      await apiRequest.post("/users/save", {
+        postId: post.id,
+      });
+    } catch (error) {
+      console.log(error);
+      setSaved((prev) => !prev);
+    }
+  };
+
   return (
-    <div className='singlePage'>
+    <div className="singlePage">
       <div className="details">
         <div className="wrapper">
-          <Slider images={post.images}/>
+          <Slider images={post.images} />
           <div className="info">
             <div className="top">
               <div className="post">
@@ -28,15 +47,18 @@ const SinglePage = () => {
                 <span>{post.user.username}</span>
               </div>
             </div>
-            <div className="bottom" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(post.postDetail.desc)}}>
-            </div>
+            <div
+              className="bottom"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(post.postDetail.desc),
+              }}
+            ></div>
           </div>
         </div>
       </div>
-      
+
       <div className="features">
         <div className="wrapper">
-        
           {/* GENERAL */}
           <p className="title">General</p>
           <div className="listVertical">
@@ -91,7 +113,12 @@ const SinglePage = () => {
               <img src="/school.png" alt="" />
               <div className="featureText">
                 <span>School</span>
-                <p>{post.postDetail.school > 999 ? post.postDetail.school / 1000 + "km" : post.postDetail.school + "m"} away</p>
+                <p>
+                  {post.postDetail.school > 999
+                    ? post.postDetail.school / 1000 + "km"
+                    : post.postDetail.school + "m"}{" "}
+                  away
+                </p>
               </div>
             </div>
             <div className="feature">
@@ -111,16 +138,24 @@ const SinglePage = () => {
           </div>
           <p className="title">Location</p>
           <div className="mapContainer">
-            <Map items={[post]}/>
+            <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button><img src="/chat.png" alt="" />Send a Message</button>
-            <button><img src="/save.png" alt="" />Save the Place</button>
+            <button>
+              <img src="/chat.png" alt="" />
+              Send a Message
+            </button>
+            <button onClick={handleSave} style={{
+              backgroundColor: saved ? "#fece51" : "white"
+            }}>
+              <img src="/save.png" alt="" />
+              {saved ? "Place saved" : "Save the place"}
+            </button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SinglePage
+export default SinglePage;
