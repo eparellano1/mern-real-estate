@@ -2,36 +2,44 @@ import Chat from "../../components/Chat/Chat";
 import List from "../../components/List/List";
 import "./ProfilePage.scss";
 import apiRequest from "../../lib/apiRequest";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
-  const { updateUser, currentUser } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { updateUser, currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
-      await apiRequest.post("/auth/logout")
-      updateUser(null)
-      navigate("/")
+      await apiRequest.post("/auth/logout");
+      updateUser(null);
+      navigate("/");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <div className="profilePage">
       <div className="details">
         <div className="wrapper">
           <div className="title">
             <h1>User Information</h1>
-            <button>Update Profile</button>
+            <Link to="/profile/update">
+              <button>Update Profile</button>
+            </Link>
           </div>
           <div className="info">
-            <span>Avatar:
+            <span>
+              Avatar:
               <img src={currentUser.avatar || "/noavatar.jpg"} alt="" />
             </span>
-            <span>Username: <b>{currentUser.username}</b></span>
-            <span>E-mail: <b>{currentUser.email}</b></span>
+            <span>
+              Username: <b>{currentUser.username}</b>
+            </span>
+            <span>
+              E-mail: <b>{currentUser.email}</b>
+            </span>
             <button onClick={handleLogout}>Logout</button>
           </div>
           <div className="title">
@@ -45,7 +53,7 @@ const ProfilePage = () => {
           <List />
         </div>
       </div>
-      
+
       <div className="chatContainer">
         <div className="wrapper">
           <Chat />
