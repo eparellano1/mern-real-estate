@@ -68,20 +68,28 @@
             }
         }
 
-        button {
-            border: none;
-            cursor: pointer;
-            background-color: #fece51;
+        a {
             flex: 1;
+            background-color: #fece51;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            @include sm {
-                padding: 1px;
-            }
-            img {
-                width: 24px;
-                height: 24px;
-                margin: 10px;
+            button {
+                border: none;
+                cursor: pointer;
+                background-color: #fece51;
+    
+                @include sm {
+                    padding: 1px;
+                }
+                img {
+                    width: 24px;
+                    height: 24px;
+                    margin: 10px;
+                }
             }
         }
+        
     }
 }
