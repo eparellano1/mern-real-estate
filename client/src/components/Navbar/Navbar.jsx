@@ -10,11 +10,11 @@ const Navbar = () => {
   return (
     <nav>
       <div className="left">
-        <a className="logo">
+        <a className="logo" href="/">
           <img src="/logo.png" alt=""></img>
           <span>RBanag Realty</span>
         </a>
-        <a href="">Home</a>
+        <a href="/">Home</a>
         <a href="">About</a>
         <a href="">Contact</a>
         <a href="">Agents</a>
